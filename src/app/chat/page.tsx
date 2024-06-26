@@ -1,9 +1,16 @@
-import styles from './index.module.css';
+"use client";
+
+import styles from './page.module.css';
+import { ConnectionProvider } from '@/contexts/ConnectionContext';
+import Messages from '@/components/messages';
 
 export default function Chat() {
     return (
-        <div className={styles.container}>
-            <h1>Chat</h1>
-        </div>
+        <ConnectionProvider>
+            <div className={styles.container}>
+                <h1>Chat</h1>
+                <Messages />
+            </div>
+        </ConnectionProvider>
     );
 }
