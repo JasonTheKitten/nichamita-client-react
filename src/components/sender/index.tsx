@@ -10,6 +10,7 @@ export default function Sender() {
         if (connection) {
             const service = connection.rest.messageService;
             service.sendMessage(message).subscribe(() => {
+                setMessage('');
                 setSent(true);
             });
         }
@@ -20,10 +21,16 @@ export default function Sender() {
         setSent(false);
     }
 
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
     return (
         <div>
             <h1>Sender</h1>
-            <input type="text" value={message} onChange={updateMessage} />
+            <input type="text" value={message} onChange={updateMessage} onKeyDown={handleKeyPress} />
             <button onClick={sendMessage}>Send</button>
             {sent && <p>Message sent!</p>}
         </div>
