@@ -1,18 +1,18 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { NichaGatewayClient } from '@/nichajs/gateway';
+import { NichaClient } from '@/nichajs/combined';
 
-const ConnectionContext = createContext<NichaGatewayClient | null>(null);
+const ConnectionContext = createContext<NichaClient | null>(null);
 
 export const ConnectionProvider = ({ children } : { children:  any}) => {
-    const [ connection, setConnection ] = useState<NichaGatewayClient | null>(null);
+    const [ connection, setConnection ] = useState<NichaClient | null>(null);
 
     useEffect(() => {
-        const client = new NichaGatewayClient('ws://localhost:8080/gateway');
+        const client = new NichaClient('ws://localhost:8080/gateway', 'http://localhost:8080');
         setConnection(() => client);
-        client.connect();
+        client.gateway.connect();
 
         return () => {
-            connection?.disconnect();
+            connection?.gateway.disconnect();
         }
     }, []);
     

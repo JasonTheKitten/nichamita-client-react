@@ -8,7 +8,7 @@ export default function Messages() {
 
     useEffect(() => {
         const transformer = new MessageEventTransformer();
-        connection?.onEvent<MessageEvent>(transformer).subscribe((event: MessageEvent) => {
+        connection?.gateway.onEvent<MessageEvent>(transformer).subscribe((event: MessageEvent) => {
             setMessages((prev) => [ ...prev, event.message ]);
         });
     }, [ connection ]);
