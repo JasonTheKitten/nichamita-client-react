@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
 import { useConnection } from "@/contexts/ConnectionContext";
-import { MessageEvent, MessageEventTransformer } from "@/nichajs/gateway/event/MessageEvent";
 import { MessageEntity } from "@/nichajs/entity/MessageEntity";
+import { MessageEvent, MessageEventTransformer } from "@/nichajs/gateway/event/MessageEvent";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import Message from "../message";
+import styles from "./messages.module.css";
 
-export default function Messages() {
+export default function Messages({className, sentTrigger, setSentTrigger}: {className?: string, sentTrigger: boolean, setSentTrigger: Dispatch<SetStateAction<boolean>>}) {
     const connection = useConnection();
     const [ messages, setMessages ] = useState<MessageEntity[]>([]);
 
@@ -14,22 +16,31 @@ export default function Messages() {
         });
     }, [ connection ]);
 
-    const formatTime = (timestamp: number): string => {
-        const date = new Date(timestamp);
-        let amPm = date.getHours() >= 12 ? 'PM' : 'AM';
-        let hours = date.getHours() % 12;
-        hours = hours !== 0 ? hours : 12;
-        return `${hours}:${date.getMinutes()} ${amPm}`;
+    useEffect(() => {
+        if (!sentTrigger || !className) return;
+
+        const messageList = document.querySelector(`.${className}`);
+        if (messageList) {
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        setSentTrigger(false);
+    }, [ sentTrigger ]);
+    
+    const shouldCollapseMessage = (message: MessageEntity, prevMessage: MessageEntity): boolean => {
+        return (
+            message.authorId === prevMessage.authorId
+            && message.createdAt - prevMessage.createdAt < 1000 * 60 * 3
+        );
     }
 
     return (
-        <div>
-            <h1>Messages</h1>
-            <ul>
-                {messages.map((message, index) => (
-                    
-                    <li key={index}>{message.text} (today at { formatTime(message.createdAt) })</li>
-                ))}
+        <div className={className}>
+            <ul className={styles.messages}>
+                {messages.map((message, index) => {
+                    const isCollapsed = index > 0 && shouldCollapseMessage(message, messages[index - 1]);
+                    return <Message key={index} isCollapsed={isCollapsed} index={index} message={message} />;
+                })}
             </ul>
         </div>
     );

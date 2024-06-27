@@ -1,3 +1,5 @@
+import './app.css'
+
 export const metadata = {
     title: 'Nichamita',
     description: '',

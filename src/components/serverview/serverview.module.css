@@ -1,0 +1,17 @@
+.serverview {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.sender {
+    flex-grow: 0;
+    margin: 1em;
+}
