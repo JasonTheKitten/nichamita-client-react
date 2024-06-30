@@ -64,24 +64,25 @@ const formatNonMultilineCode = (line: string): string => {
 }
 
 export const formatText = (text: string, multilineCodeClass: string): string => {
-    let formatted = text;
-    formatted = formatted.replace(/\n/g, '<br>');
+    let formatted = text.replace(/<br>/g, '\n').trim();
 
     let splitAroundMultilineCode = formatted.split('```');
     for (let i = 0; i < splitAroundMultilineCode.length; i++) {
         if (i % 2 === 0 || i == splitAroundMultilineCode.length -1) {
-            splitAroundMultilineCode[i] = formatNonMultilineCode(splitAroundMultilineCode[i]);
+            splitAroundMultilineCode[i] = formatNonMultilineCode(splitAroundMultilineCode[i].replace(/\n/g, '<br>'));
         } else {
-            splitAroundMultilineCode[i] = `<code class=${multilineCodeClass}>${splitAroundMultilineCode[i]}</code>`
+            console.log(splitAroundMultilineCode[i])
+            splitAroundMultilineCode[i] = `<code class=${multilineCodeClass}>${splitAroundMultilineCode[i].trim().replace(/\n/g, '<br>')}</code>`
         }
     }
 
-    formatted = splitAroundMultilineCode.join('');
     const tripleTickCount = (text.match(/```/g) || []).length;
-    if (text.startsWith('```') && tripleTickCount % 2 === 1) {
-        formatted = '```' + formatted;
-    } else if (text.endsWith('```') && tripleTickCount % 2 === 1) {
-        formatted = formatted + '```';
+    formatted = splitAroundMultilineCode.join('```');
+    if (tripleTickCount % 2 === 0) {
+        formatted = splitAroundMultilineCode.join('');
+    } else {
+        let lastLine = splitAroundMultilineCode.pop();
+        formatted = splitAroundMultilineCode.join('') + '```' + lastLine;
     }
 
     return formatted;

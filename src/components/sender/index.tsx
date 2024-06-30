@@ -20,7 +20,7 @@ export default function Sender({className, setSentTrigger}: {className?: string,
         if (message.trim() === '') return;
         if (connection) {
             const service = connection.rest.messageService;
-            service.sendMessage(message).subscribe(() => {
+            service.sendMessage(message.trim()).subscribe(() => {
                 setMessage('');
                 setSentTrigger(true);
                 el.rows = 1;
@@ -34,7 +34,6 @@ export default function Sender({className, setSentTrigger}: {className?: string,
     }
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-
         if (e.key === 'Enter' && e.shiftKey) {
             return;
         } else if (e.key === 'Enter') {
