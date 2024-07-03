@@ -7,7 +7,12 @@ export const ConnectionProvider = ({ children } : { children:  any}) => {
     const [ connection, setConnection ] = useState<NichaClient | null>(null);
 
     useEffect(() => {
-        const client = new NichaClient('ws://localhost:8080/gateway', 'http://localhost:8080');
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.assign('/');
+            return;
+        }
+        const client = new NichaClient('ws://localhost:8080/gateway', 'http://localhost:8080', token);
         setConnection(() => client);
         client.gateway.connect();
 

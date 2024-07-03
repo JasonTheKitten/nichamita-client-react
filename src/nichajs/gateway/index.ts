@@ -8,13 +8,15 @@ type CloseHook = () => void;
 export class NichaGatewayClient {
 
     readonly #endpoint: string;
+    readonly #token: string;
     readonly #listeners: Listener[] = [];
     readonly #closeHooks: CloseHook[] = [];
 
     #connection: WebSocket | null = null;
 
-    constructor(endpoint: string) {
+    constructor(endpoint: string, token: string) {
         this.#endpoint = endpoint;
+        this.#token = token;
     }
 
     connect() {
@@ -59,6 +61,13 @@ export class NichaGatewayClient {
 
         this.#connection.onclose = () => {
             this.#connection = null;
+        };
+
+        this.#connection.onopen = () => {
+            this.#connection?.send(JSON.stringify({
+                type: 'authenticate',
+                token: this.#token
+            }));
         };
     }
 

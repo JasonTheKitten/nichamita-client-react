@@ -22,6 +22,7 @@ export function requestRoute(context: RestContext, req: RouteRequest): Observabl
             method: req.method,
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": context.token ? `Bearer ${context.token}` : "",
             },
             body: bodyText,
         }).then((response) => {

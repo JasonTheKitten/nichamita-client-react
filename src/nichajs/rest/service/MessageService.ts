@@ -12,18 +12,14 @@ export class MessageService {
     }
 
     sendMessage(message: string): Observable<void> {
-        const body = {
-            message: message
-        };
         const req: RouteRequest = {
             method: "POST",
             route: "/message",
-            body: body,
-        }
+            body: { message },
+        };
 
-        return requestRoute(this.#context, req).pipe(
-            map(() => {})
-        );
+        return requestRoute(this.#context, req)
+            .pipe(map(() => {}));
     }
 
 }
